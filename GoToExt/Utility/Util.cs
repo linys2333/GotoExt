@@ -1,7 +1,5 @@
 ﻿using System.IO;
-using System.Text;
 using System.Xml;
-using System.Xml.Serialization;
 
 namespace GoToExt
 {
@@ -25,6 +23,21 @@ namespace GoToExt
             xmlDoc.Load(path);
 
             return xmlDoc;
+        }
+
+        /// <summary>
+        /// 获取文件后缀
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
+        public static string GetExtName(string fileName)
+        {
+            int index = fileName.LastIndexOf('.');
+            if (index == -1 || index == fileName.Length - 1)
+            {
+                return "";
+            }
+            return fileName.Substring(index + 1);
         }
     }
 }

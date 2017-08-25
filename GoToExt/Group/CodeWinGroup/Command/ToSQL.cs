@@ -6,12 +6,9 @@
 
 using System;
 using System.ComponentModel.Design;
-using System.Globalization;
 using EnvDTE;
 using EnvDTE80;
-using Microsoft.VisualStudio.CommandBars;
 using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
 
 namespace GoToExt
 {
@@ -96,9 +93,7 @@ namespace GoToExt
             var myCommand = sender as OleMenuCommand;
             if (null != myCommand)
             {
-                string fileName = dte.ActiveDocument.Name;
-                string extName = fileName.Substring(fileName.LastIndexOf('.') + 1);
-
+                string extName = Util.GetExtName(dte.ActiveDocument.Name);
                 myCommand.Visible = extName.Equals("cs", StringComparison.OrdinalIgnoreCase);
             }
         }
