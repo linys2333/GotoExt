@@ -1,7 +1,7 @@
 ﻿using EnvDTE;
 using EnvDTE80;
 
-namespace ToAPI
+namespace GoToExt
 {
     /// <summary>
     /// ServiceAPI相关操作

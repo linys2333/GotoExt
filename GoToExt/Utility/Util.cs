@@ -3,7 +3,7 @@ using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
 
-namespace ToAPI
+namespace GoToExt
 {
     public static class Util
     {        

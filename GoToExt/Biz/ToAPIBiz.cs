@@ -8,18 +8,18 @@ using System.Xml;
 using EnvDTE;
 using EnvDTE80;
 
-namespace ToAPI
+namespace GoToExt
 {
     /// <summary>
     /// ServiceAPI相关操作
     /// </summary>
-    public class ToDefineBiz
+    public class ToAPIBiz
     {
         private readonly ServiceFunc _funcInfo;
         private readonly DTE2 _dte;
         private readonly PubBiz _pubBiz;
 
-        public ToDefineBiz(DTE2 dte)
+        public ToAPIBiz(DTE2 dte)
         {
             _dte = dte;
             _pubBiz = new PubBiz(_dte);
@@ -33,6 +33,10 @@ namespace ToAPI
         {
             // 解析
             string selection = _pubBiz.GetSelection();
+            if (string.IsNullOrEmpty(selection))
+            {
+                return;
+            }
             AnalyzeInfo(selection);
 
             // 校验
@@ -46,7 +50,7 @@ namespace ToAPI
             string path = GetFullPath();
             if (string.IsNullOrEmpty(path))
             {
-                MessageBox.Show("未找到对应的后端文件，请打开所属解决方案重试！");
+                MessageBox.Show("未找到对应的后端文件！");
                 return;
             }
 

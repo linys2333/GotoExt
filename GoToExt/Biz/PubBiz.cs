@@ -2,7 +2,7 @@
 using EnvDTE80;
 using System.Text.RegularExpressions;
 
-namespace ToAPI
+namespace GoToExt
 {
     /// <summary>
     /// ServiceAPI相关操作

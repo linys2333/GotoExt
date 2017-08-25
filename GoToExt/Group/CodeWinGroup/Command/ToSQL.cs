@@ -1,5 +1,5 @@
 ﻿//------------------------------------------------------------------------------
-// <copyright file="ToDefine.cs" company="Company">
+// <copyright file="ToSQL.cs" company="Lys">
 //     Copyright (c) Company.  All rights reserved.
 // </copyright>
 //------------------------------------------------------------------------------
@@ -9,21 +9,21 @@ using System.ComponentModel.Design;
 using System.Globalization;
 using EnvDTE;
 using EnvDTE80;
+using Microsoft.VisualStudio.CommandBars;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 
-namespace ToAPI
+namespace GoToExt
 {
     /// <summary>
     /// Command handler
     /// </summary>
-    internal sealed class ToDefine
+    internal sealed class ToSQL
     {
         /// <summary>
         /// Command ID.
         /// </summary>
-        public const int ToDefineCmdId = 0x0100;
-        public const int ToSQLCmdId = 0x0200;
+        public const int CommandId = 0x0200;
 
         /// <summary>
         /// Command menu group (command set GUID).
@@ -35,37 +35,37 @@ namespace ToAPI
         /// </summary>
         private readonly Package package;
 
+        private readonly DTE2 dte;
+
         /// <summary>
-        /// Initializes a new instance of the <see cref="ToDefine"/> class.
+        /// Initializes a new instance of the <see cref="ToSQL"/> class.
         /// Adds our command handlers for menu (commands must exist in the command table file)
         /// </summary>
         /// <param name="package">Owner package, not null.</param>
-        private ToDefine(Package package)
+        private ToSQL(Package package)
         {
             if (package == null)
             {
-                throw new ArgumentNullException("package");
+                throw new ArgumentNullException(nameof(package));
             }
 
             this.package = package;
+            dte = (DTE2)this.ServiceProvider.GetService(typeof(DTE));
 
             OleMenuCommandService commandService = this.ServiceProvider.GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
             if (commandService != null)
             {
-                var toDefineCmdId = new CommandID(CommandSet, ToDefineCmdId);
-                var toDefineItem = new MenuCommand(this.ToDefineItemCallback, toDefineCmdId);
-                commandService.AddCommand(toDefineItem);
-
-                var toSQLCmdId = new CommandID(CommandSet, ToSQLCmdId);
-                var toSQLItem = new MenuCommand(this.ToSQLItemCallback, toSQLCmdId);
-                commandService.AddCommand(toSQLItem);
+                var menuCommandID = new CommandID(CommandSet, CommandId);
+                var menuItem = new OleMenuCommand(this.MenuItemCallback, menuCommandID);
+                menuItem.BeforeQueryStatus += OnBeforeQueryStatus;
+                commandService.AddCommand(menuItem);
             }
         }
 
         /// <summary>
         /// Gets the instance of the command.
         /// </summary>
-        public static ToDefine Instance
+        public static ToSQL Instance
         {
             get;
             private set;
@@ -88,7 +88,19 @@ namespace ToAPI
         /// <param name="package">Owner package, not null.</param>
         public static void Initialize(Package package)
         {
-            Instance = new ToDefine(package);
+            Instance = new ToSQL(package);
+        }
+
+        private void OnBeforeQueryStatus(object sender, EventArgs e)
+        {
+            var myCommand = sender as OleMenuCommand;
+            if (null != myCommand)
+            {
+                string fileName = dte.ActiveDocument.Name;
+                string extName = fileName.Substring(fileName.LastIndexOf('.') + 1);
+
+                myCommand.Visible = extName.Equals("cs", StringComparison.OrdinalIgnoreCase);
+            }
         }
 
         /// <summary>
@@ -98,24 +110,8 @@ namespace ToAPI
         /// </summary>
         /// <param name="sender">Event sender.</param>
         /// <param name="e">Event args.</param>
-        private void ToDefineItemCallback(object sender, EventArgs e)
+        private void MenuItemCallback(object sender, EventArgs e)
         {
-            DTE2 dte = (DTE2) this.ServiceProvider.GetService(typeof(DTE));
-
-            try
-            {
-                new ToDefineBiz(dte).Go();
-            }
-            catch
-            {
-                // ignored
-            }
-        }
-
-        private void ToSQLItemCallback(object sender, EventArgs e)
-        {
-            DTE2 dte = (DTE2)this.ServiceProvider.GetService(typeof(DTE));
-
             try
             {
                 new ToSQLBiz(dte).Go();

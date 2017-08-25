@@ -9,7 +9,7 @@ using System.Xml;
 using EnvDTE;
 using EnvDTE80;
 
-namespace ToAPI
+namespace GoToExt
 {
     /// <summary>
     /// ServiceAPI相关操作
@@ -34,6 +34,10 @@ namespace ToAPI
         {
             // 解析
             string sql = GetSelection();
+            if (string.IsNullOrEmpty(sql))
+            {
+                return;
+            }
             AnalyzeInfo();
 
             // 校验
@@ -78,15 +82,15 @@ namespace ToAPI
                 EditPoint editPoint = point.CreateEditPoint();
                 EditPoint startPoint = point.CreateEditPoint();
                 EditPoint endPoint = point.CreateEditPoint();
-                
+
                 // 寻找字符串起始点
-                for(int i = 0; i < 100; i++)
+                for (int i = 0; i < 100; i++)
                 {
                     startPoint.MoveToLineAndOffset(editPoint.Line, startPoint.LineCharOffset - 1);
 
                     string str = editPoint.GetText(startPoint);
 
-                    if(startPoint.LineCharOffset <= 1 || str.StartsWith(@""""))
+                    if (startPoint.LineCharOffset <= 1 || str.StartsWith(@""""))
                     {
                         break;
                     }
@@ -106,6 +110,10 @@ namespace ToAPI
                 }
 
                 code = startPoint.GetText(endPoint);
+                if (!code.StartsWith(@"""") || !code.EndsWith(@""""))
+                {
+                    code = "";
+                }
             }
 
             // 多行转成一行并去掉多余符号

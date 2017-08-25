@@ -1,5 +1,5 @@
 ﻿//------------------------------------------------------------------------------
-// <copyright file="ToDefinePackage.cs" company="Company">
+// <copyright file="GoToExtPackage.cs" company="Lys">
 //     Copyright (c) Company.  All rights reserved.
 // </copyright>
 //------------------------------------------------------------------------------
@@ -16,7 +16,7 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.Win32;
 
-namespace ToAPI
+namespace GoToExt
 {
     /// <summary>
     /// This is the class that implements the package exposed by this assembly.
@@ -37,20 +37,21 @@ namespace ToAPI
     /// </remarks>
     [PackageRegistration(UseManagedResourcesOnly = true)]
     [InstalledProductRegistration("#110", "#112", "1.0", IconResourceID = 400)] // Info on this package for Help/About
+    [ProvideAutoLoad(UIContextGuids80.SolutionExists)]
     [ProvideMenuResource("Menus.ctmenu", 1)]
-    [Guid(ToDefinePackage.PackageGuidString)]
+    [Guid(GoToExtPackage.PackageGuidString)]
     [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "pkgdef, VS and vsixmanifest are valid VS terms")]
-    public sealed class ToDefinePackage : Package
+    public sealed class GoToExtPackage : Package
     {
         /// <summary>
-        /// ToDefinePackage GUID string.
+        /// GoToExtPackage GUID string.
         /// </summary>
         public const string PackageGuidString = "a5f764d5-c37b-4baf-8a4c-a9d0bb66743f";
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ToDefine"/> class.
+        /// Initializes a new instance of the <see cref="GoToExt"/> class.
         /// </summary>
-        public ToDefinePackage()
+        public GoToExtPackage()
         {
             // Inside this method you can place any initialization code that does not require
             // any Visual Studio service because at this point the package object is created but
@@ -66,7 +67,9 @@ namespace ToAPI
         /// </summary>
         protected override void Initialize()
         {
-            ToDefine.Initialize(this);
+            ScriptCtxGroup.Initialize(this);
+            CodeWinGroup.Initialize(this);
+
             base.Initialize();
         }
 

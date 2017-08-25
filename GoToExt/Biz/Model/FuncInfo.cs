@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace ToAPI
+namespace GoToExt
 {
     /// <summary>
     /// Func相关信息
