@@ -111,7 +111,7 @@ namespace GoToExt
             {
                 new ToAPIBiz(dte).Go();
             }
-            catch
+            catch(Exception ex)
             {
                 // ignored
             }

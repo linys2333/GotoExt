@@ -1,6 +1,8 @@
-﻿using EnvDTE;
+﻿using System;
+using EnvDTE;
 using EnvDTE80;
 using System.Text.RegularExpressions;
+using System.Linq;
 
 namespace GoToExt
 {
@@ -36,10 +38,10 @@ namespace GoToExt
                 code = editPoint.GetLines(editPoint.Line, editPoint.Line + 1);
             }
 
-            // 多行转成一行并去掉多余空格
-            code = Regex.Replace(code, @"\s+", s => "");
+            // 多行转成一行
+            code = Regex.Replace(code, @"\s+", s => " ");
 
-            return code;
+            return code.Trim();
         }
 
         /// <summary>
@@ -52,7 +54,7 @@ namespace GoToExt
             var selection = (TextSelection)_dte.ActiveDocument.Selection;
 
             // 触发的方法信息
-            var codeFunc = (CodeFunction2)codeModel.CodeElementFromPoint(selection.AnchorPoint, vsCMElement.vsCMElementFunction);
+            var codeFunc = (CodeFunction2) codeModel.CodeElementFromPoint(selection.AnchorPoint, vsCMElement.vsCMElementFunction);
             var codeClass = (CodeClass2)codeFunc.Parent;
 
             serviceFunc.Namespace = codeClass.Namespace.Name;
@@ -63,7 +65,7 @@ namespace GoToExt
         }
 
         /// <summary>
-        /// 匹配代码
+        /// 单纯匹配代码
         /// </summary>
         /// <returns></returns>
         public bool ToCode(Window win, string pattern)
@@ -87,7 +89,126 @@ namespace GoToExt
         }
 
         /// <summary>
-        /// 匹配代码
+        /// 匹配代码模型
+        /// </summary>
+        /// <returns></returns>
+        public bool ToCode(Window win, FuncInfo funcInfo)
+        {
+            // 查找命名空间
+            Func<CodeElements, CodeNamespace> findNamespace = source =>
+            {
+                if (source == null)
+                {
+                    return null;
+                }
+
+                for (int i = 1; i <= source.Count; i++)
+                {
+                    CodeElement elem = source.Item(i);
+
+                    if (elem.Kind != vsCMElement.vsCMElementNamespace)
+                    {
+                        continue;
+                    }
+
+                    var target = (CodeNamespace) elem;
+                    if (!target.Name.Equals(funcInfo.Namespace, StringComparison.OrdinalIgnoreCase))
+                    {
+                        continue;
+                    }
+
+                    return target;
+                }
+
+                return null;
+            };
+
+            // 查找类
+            Func<CodeElements, CodeClass> findClass = source =>
+            {
+                if (source == null)
+                {
+                    return null;
+                }
+
+                for (int i = 1; i <= source.Count; i++)
+                {
+                    CodeElement elem = source.Item(i);
+
+                    if (elem.Kind != vsCMElement.vsCMElementClass)
+                    {
+                        continue;
+                    }
+
+                    var target = (CodeClass)elem;
+                    if (!target.Name.Equals(funcInfo.Class, StringComparison.OrdinalIgnoreCase))
+                    {
+                        continue;
+                    }
+
+                    return target;
+                }
+
+                return null;
+            };
+
+            // 查找方法
+            Func<CodeElements, CodeFunction> findFunc = source =>
+            {
+                if (source == null)
+                {
+                    return null;
+                }
+
+                for (int i = 1; i <= source.Count; i++)
+                {
+                    CodeElement elem = source.Item(i);
+
+                    if (elem.Kind != vsCMElement.vsCMElementFunction)
+                    {
+                        continue;
+                    }
+
+                    var target = (CodeFunction)elem;
+                    if (target.Name.Equals(funcInfo.Func, StringComparison.OrdinalIgnoreCase) &&
+                        (funcInfo.ParamNum == -1 || target.Parameters.Count == funcInfo.ParamNum))
+                    {
+                        return target;
+                    }
+                }
+
+                return null;
+            };
+
+            // 获取目标方法
+            FileCodeModel codeModel = win.Document.ProjectItem.FileCodeModel;
+            CodeNamespace namesp = findNamespace(codeModel?.CodeElements);
+            CodeClass cls = findClass(namesp?.Children);
+            CodeFunction func = findFunc(cls?.Children);
+            
+            if (func == null)
+            {
+                return false;
+            }
+
+            // 选中
+            EditPoint startPoint = func.StartPoint.CreateEditPoint();
+            EditPoint endPoint = null;
+            
+            bool find = startPoint.FindPattern(funcInfo.Func, (int) vsFindOptions.vsFindOptionsNone, ref endPoint);
+            
+            if (find)
+            {
+                var doc = (TextDocument)win.Document.Object("TextDocument");
+                doc.Selection.MoveToPoint(endPoint, false);
+                doc.Selection.MoveToPoint(startPoint, true);
+            }
+
+            return find;
+        }
+
+        /// <summary>
+        /// 查找代码
         /// </summary>
         /// <returns></returns>
         public string FindCode(Window win, string pattern)

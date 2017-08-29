@@ -111,7 +111,7 @@ namespace GoToExt
             {
                 new ToSQLBiz(dte).Go();
             }
-            catch
+            catch (Exception ex)
             {
                 // ignored
             }

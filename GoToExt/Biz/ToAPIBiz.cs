@@ -30,7 +30,7 @@ namespace GoToExt
         {
             // 解析
             string selection = _pubBiz.GetSelection();
-            if (string.IsNullOrEmpty(selection))
+            if (string.IsNullOrWhiteSpace(selection))
             {
                 return;
             }
@@ -52,7 +52,7 @@ namespace GoToExt
             }
 
             Window win = _dte.ItemOperations.OpenFile(path);
-            if (!ToFunc(win))
+            if (!_pubBiz.ToCode(win, _funcInfo))
             {
                 if (_funcInfo.ParamNum > -1)
                 {
@@ -76,9 +76,10 @@ namespace GoToExt
         /// <summary>
         /// 解析代码设置目标对象
         /// </summary>
-        /// <param name="code">例如：appService.GetGtPackDtl(packGUID,gtLevel)</param>
+        /// <param name="code">例如：[return ]appService.GetGtPackDtl(packGUID, gtLevel)</param>
         private void AnalyzeInfo(string code)
         {
+            // 删掉回调函数
             code = Regex.Replace(code, @"\.then\b.*$", s => "");
 
             string service = Regex.Match(code, @"\b\w+Service(?=\.)").Value;
@@ -120,7 +121,7 @@ namespace GoToExt
         private string GetJs(string service)
         {
             // appService = require("Mysoft.Gtxt.GtFaMng.AppServices.GtFaAppService")
-            string text = _pubBiz.FindCode(_dte.ActiveWindow, $@"{service}\s+=\s+require\([""|'].+?[""|']\)");
+            string text = _pubBiz.FindCode(_dte.ActiveWindow, $@"\b{service}\s+=\s+require\([""|'].+?[""|']\)");
             
             string pattern = $@"(?<=\brequire\([""|']).+?(?=[""|']\))";
             string value = Regex.Match(text, pattern, RegexOptions.IgnoreCase).Value;
@@ -140,6 +141,7 @@ namespace GoToExt
                 return "";
             }
 
+            // xxx\00_根目录\Web_Gtxt.csproj
             string projPath = _dte.ActiveDocument.ProjectItem.ContainingProject.FullName;
 
             // 反序列化会报错，故直接操作XmlDocument
@@ -191,7 +193,7 @@ namespace GoToExt
         private bool ToFunc(Window win)
         {
             // 匹配方法定义代码
-            string pattern = @"\w_ \.\<\>\t\n";                
+            string pattern = @"\w_ \.\<\>\[\]\t\n";
             switch (_funcInfo.ParamNum)
             {
                 // -1不匹配参数个数

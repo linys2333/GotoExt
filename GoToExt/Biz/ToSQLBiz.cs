@@ -32,18 +32,12 @@ namespace GoToExt
         {
             // 解析
             string sql = GetSelection();
-            if (string.IsNullOrEmpty(sql))
+            if (string.IsNullOrWhiteSpace(sql))
             {
                 return;
             }
             AnalyzeInfo();
-
-            // 校验
-            if (string.IsNullOrEmpty(sql))
-            {
-                return;
-            }
-
+            
             // 查找
             string path = GetFullPath(sql);
             if (string.IsNullOrEmpty(path))
@@ -115,7 +109,7 @@ namespace GoToExt
             }
 
             // 多行转成一行并去掉多余符号
-            return Regex.Replace(code, @"[""|\s]+", s => "");
+            return Regex.Replace(code, @"[""|\s]+", s => " ").Trim();
         }
 
         /// <summary>
