@@ -195,7 +195,8 @@ namespace GoToExt
             EditPoint startPoint = func.StartPoint.CreateEditPoint();
             EditPoint endPoint = null;
             
-            bool find = startPoint.FindPattern(funcInfo.Func, (int) vsFindOptions.vsFindOptionsNone, ref endPoint);
+            bool find = startPoint.FindPattern($@"\b{funcInfo.Func}\b", (int)(vsFindOptions.vsFindOptionsNone | 
+                vsFindOptions.vsFindOptionsRegularExpression), ref endPoint);
             
             if (find)
             {

@@ -47,7 +47,7 @@ namespace GoToExt
             }
 
             Window win = _dte.ItemOperations.OpenFile(path);
-            if (!_pubBiz.ToCode(win, sql))
+            if (!ToSQL(win, sql))
             {
                 MessageBox.Show("未找到匹配的SQL！");
                 return;
@@ -142,8 +142,10 @@ namespace GoToExt
                 if (dir.Contains("资源文件"))
                 {
                     string path = $@"{dir}\Mysoft.{_funcInfo.AppCode}.Resource\XmlCommand";
+                    files.AddRange(GetConfig(path));
 
-                    files.AddRange(Directory.EnumerateFiles(path, "*.config", SearchOption.AllDirectories).ToList());
+                    path = $@"{dir}\{_funcInfo.ProjName}.Resource\XmlCommand";
+                    files.AddRange(GetConfig(path));
 
                     break;
                 }
@@ -165,6 +167,24 @@ namespace GoToExt
             }
 
             return "";
+        }
+
+        /// <summary>
+        /// 获取所有资源文件
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        private List<string> GetConfig(string path)
+        {
+            return Directory.Exists(path)
+                ? Directory.EnumerateFiles(path, "*.config", SearchOption.AllDirectories).ToList()
+                : new List<string>();
+        }
+
+        private bool ToSQL(Window win, string sql)
+        {
+            string pattern = $@"\b{sql}\b";
+            return _pubBiz.ToCode(win, pattern);
         }
 
         #endregion
