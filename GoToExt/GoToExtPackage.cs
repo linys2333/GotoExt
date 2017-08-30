@@ -1,5 +1,5 @@
 ﻿//------------------------------------------------------------------------------
-// <copyright file="GoToExtPackage.cs" company="Lys">
+// <copyright file="GotoExtPackage.cs" company="Lys">
 //     Copyright (c) Company.  All rights reserved.
 // </copyright>
 //------------------------------------------------------------------------------
@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 
-namespace GoToExt
+namespace GotoExt
 {
     /// <summary>
     /// This is the class that implements the package exposed by this assembly.
@@ -33,19 +33,19 @@ namespace GoToExt
     [InstalledProductRegistration("#110", "#112", "1.0", IconResourceID = 400)] // Info on this package for Help/About
     [ProvideAutoLoad(UIContextGuids80.SolutionExists)]
     [ProvideMenuResource("Menus.ctmenu", 1)]
-    [Guid(GoToExtPackage.PackageGuidString)]
+    [Guid(GotoExtPackage.PackageGuidString)]
     [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "pkgdef, VS and vsixmanifest are valid VS terms")]
-    public sealed class GoToExtPackage : Package
+    public sealed class GotoExtPackage : Package
     {
         /// <summary>
-        /// GoToExtPackage GUID string.
+        /// GotoExtPackage GUID string.
         /// </summary>
         public const string PackageGuidString = "a5f764d5-c37b-4baf-8a4c-a9d0bb66743f";
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="GoToExt"/> class.
+        /// Initializes a new instance of the <see cref="GotoExt"/> class.
         /// </summary>
-        public GoToExtPackage()
+        public GotoExtPackage()
         {
             // Inside this method you can place any initialization code that does not require
             // any Visual Studio service because at this point the package object is created but

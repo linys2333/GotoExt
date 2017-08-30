@@ -22,7 +22,7 @@
 
   <!--The Commands section is where commands, menus, and menu groups are defined.
       This section uses a Guid to identify the package that provides the command defined inside it. -->
-  <Commands package="guidGoToExtPackage">
+  <Commands package="guidGotoExtPackage">
     <!-- Inside this section we have different sub-sections: one for the menus, another
     for the menu groups, one for the buttons (the actual commands), one for the combos
     and the last one for the bitmaps used. Each element is identified by a command id that
@@ -36,10 +36,10 @@
          group as the part of a menu contained between two lines. The parent of a group
          must be a menu. -->
     <Groups>
-      <Group guid="guidGoToExtPackageCmdSet" id="ScriptCtxGroup" priority="0x0001">
+      <Group guid="guidGotoExtPackageCmdSet" id="ScriptCtxGroup" priority="0x0001">
         <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_CODEWIN"/>
       </Group>
-      <Group guid="guidGoToExtPackageCmdSet" id="CodeWinGroup" priority="0x0001">
+      <Group guid="guidGotoExtPackageCmdSet" id="CodeWinGroup" priority="0x0001">
         <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_CODEWIN"/>
       </Group>
     </Groups>
@@ -55,7 +55,7 @@
               <CommandFlag>DefaultInvisible</CommandFlag>
               <CommandFlag>DynamicVisibility</CommandFlag>
           If you do not want an image next to your command, remove the Icon node /> -->
-      <Button guid="guidGoToExtPackageCmdSet" id="ToAPI" priority="0x010" type="Button">
+      <Button guid="guidGotoExtPackageCmdSet" id="ToAPI" priority="0x010" type="Button">
         <Icon guid="guidObjectBrowserButtons" id="15" />
         <CommandFlag>DefaultInvisible</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
@@ -64,7 +64,7 @@
           <MenuText>转到ServiceAPI</MenuText>
         </Strings>
       </Button>
-        <Button guid="guidGoToExtPackageCmdSet" id="ToSQL" priority="0x010" type="Button">
+        <Button guid="guidGotoExtPackageCmdSet" id="ToSQL" priority="0x010" type="Button">
         <Icon guid="guidObjectBrowserButtons" id="15" />
         <CommandFlag>DefaultInvisible</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
@@ -87,20 +87,20 @@
   </Commands>
   
   <CommandPlacements>
-    <CommandPlacement guid="guidGoToExtPackageCmdSet" id="ToAPI" priority="0x0101">
-      <Parent guid="guidGoToExtPackageCmdSet" id="ScriptCtxGroup"/>
+    <CommandPlacement guid="guidGotoExtPackageCmdSet" id="ToAPI" priority="0x0101">
+      <Parent guid="guidGotoExtPackageCmdSet" id="ScriptCtxGroup"/>
     </CommandPlacement>
-    <CommandPlacement guid="guidGoToExtPackageCmdSet" id="ToSQL" priority="0x0101">
-      <Parent guid="guidGoToExtPackageCmdSet" id="CodeWinGroup"/>
+    <CommandPlacement guid="guidGotoExtPackageCmdSet" id="ToSQL" priority="0x0101">
+      <Parent guid="guidGotoExtPackageCmdSet" id="CodeWinGroup"/>
     </CommandPlacement>
   </CommandPlacements>
 
   <Symbols>
     <!-- This is the package guid. -->
-    <GuidSymbol name="guidGoToExtPackage" value="{a5f764d5-c37b-4baf-8a4c-a9d0bb66743f}" />
+    <GuidSymbol name="guidGotoExtPackage" value="{a5f764d5-c37b-4baf-8a4c-a9d0bb66743f}" />
 
     <!-- This is the guid used to group the menu commands together -->
-    <GuidSymbol name="guidGoToExtPackageCmdSet" value="{c1597039-3473-40d8-8fb0-792f9f126f7f}">
+    <GuidSymbol name="guidGotoExtPackageCmdSet" value="{c1597039-3473-40d8-8fb0-792f9f126f7f}">
       <IDSymbol name="CodeWinGroup" value="0x1020" />
       <IDSymbol name="ScriptCtxGroup" value="0x1030" />
       <IDSymbol name="ToAPI" value="0x0100" />

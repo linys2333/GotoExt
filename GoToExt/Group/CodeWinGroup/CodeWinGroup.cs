@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.VisualStudio.Shell;
 
-namespace GoToExt
+namespace GotoExt
 {
     internal sealed class CodeWinGroup
     {

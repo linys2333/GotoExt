@@ -10,7 +10,7 @@ using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
 
-namespace GoToExt
+namespace GotoExt
 {
     /// <summary>
     /// Command handler

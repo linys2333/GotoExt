@@ -7,7 +7,7 @@ using System.Xml;
 using EnvDTE;
 using EnvDTE80;
 
-namespace GoToExt
+namespace GotoExt
 {
     /// <summary>
     /// ServiceAPI相关操作

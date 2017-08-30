@@ -23,8 +23,8 @@
     <ProjectGuid>{043D7E6A-200A-4BD1-B652-5E60507586E2}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>GoToExt</RootNamespace>
-    <AssemblyName>GoToExt</AssemblyName>
+    <RootNamespace>GotoExt</RootNamespace>
+    <AssemblyName>GotoExt</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <GeneratePkgDefFile>true</GeneratePkgDefFile>
     <IncludeAssemblyInVSIXContainer>true</IncludeAssemblyInVSIXContainer>
@@ -64,7 +64,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Group\CodeWinGroup\Command\ToSQL.cs" />
     <Compile Include="Group\ScriptCtxGroup\Command\ToAPI.cs" />
-    <Compile Include="GoToExtPackage.cs" />
+    <Compile Include="GotoExtPackage.cs" />
     <Compile Include="Utility\Util.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -76,12 +76,12 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="index.html" />
-    <Content Include="Resources\GoToExtPackage.ico">
+    <Content Include="Resources\GotoExtPackage.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="stylesheet.css" />
-    <VSCTCompile Include="GoToExtPackage.vsct">
+    <VSCTCompile Include="GotoExtPackage.vsct">
       <ResourceName>Menus.ctmenu</ResourceName>
       <SubType>Designer</SubType>
     </VSCTCompile>

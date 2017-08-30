@@ -4,7 +4,7 @@ using EnvDTE80;
 using System.Text.RegularExpressions;
 using System.Linq;
 
-namespace GoToExt
+namespace GotoExt
 {
     /// <summary>
     /// ServiceAPI相关操作
