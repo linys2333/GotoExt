@@ -4,32 +4,30 @@ using System.Windows.Forms;
 using System.Xml;
 using EnvDTE;
 using EnvDTE80;
+using GotoExt.Common;
+using GotoExt.Model;
 
-namespace GotoExt
+namespace GotoExt.Biz
 {
     /// <summary>
     /// ServiceAPI相关操作
     /// </summary>
-    public class ToAPIBiz
+    public class ToAPIBiz : BaseBiz
     {
-        private readonly ServiceFunc _funcInfo;
-        private readonly DTE2 _dte;
-        private readonly PubBiz _pubBiz;
+        private ServiceFunc _funcInfo;
 
-        public ToAPIBiz(DTE2 dte)
+        public ToAPIBiz(DTE2 dte) : base(dte)
         {
-            _dte = dte;
-            _pubBiz = new PubBiz(_dte);
             _funcInfo = new ServiceFunc();
         }
 
         /// <summary>
         /// 转到定义
         /// </summary>
-        public void Go()
+        public override void Run()
         {
             // 解析
-            string selection = _pubBiz.GetSelection();
+            string selection = ExtUtil.GetSelection(Dte);
             if (string.IsNullOrWhiteSpace(selection))
             {
                 return;
@@ -51,8 +49,8 @@ namespace GotoExt
                 return;
             }
 
-            Window win = _dte.ItemOperations.OpenFile(path);
-            if (!_pubBiz.ToCode(win, _funcInfo))
+            Window win = Dte.ItemOperations.OpenFile(path);
+            if (!ExtUtil.ToCode(win, _funcInfo))
             {
                 if (_funcInfo.ParamNum > -1)
                 {
@@ -121,7 +119,7 @@ namespace GotoExt
         private string GetJs(string service)
         {
             // appService = require("Mysoft.Gtxt.GtFaMng.AppServices.GtFaAppService")
-            string text = _pubBiz.FindCode(_dte.ActiveWindow, $@"\b{service}\s+=\s+require\([""|'].+?[""|']\)");
+            string text = ExtUtil.FindCode(Dte.ActiveWindow, $@"\b{service}\s+=\s+require\([""|'].+?[""|']\)");
             
             string pattern = $@"(?<=\brequire\([""|']).+?(?=[""|']\))";
             string value = Regex.Match(text, pattern, RegexOptions.IgnoreCase).Value;
@@ -135,14 +133,14 @@ namespace GotoExt
         /// <returns></returns>
         private string GetFullPath()
         {
-            string slnPath = _dte.Solution?.FullName;
+            string slnPath = Dte.Solution?.FullName;
             if (string.IsNullOrEmpty(slnPath))
             {
                 return "";
             }
 
             // xxx\00_根目录\Web_Gtxt.csproj
-            string projPath = _dte.ActiveDocument.ProjectItem.ContainingProject.FullName;
+            string projPath = Dte.ActiveDocument.ProjectItem.ContainingProject.FullName;
 
             // 反序列化会报错，故直接操作XmlDocument
             XmlDocument doc = Util.ReadXml(projPath);
@@ -187,7 +185,7 @@ namespace GotoExt
         }
 
         /// <summary>
-        /// 匹配方法
+        /// 定位方法
         /// </summary>
         /// <returns></returns>
         private bool ToFunc(Window win)
@@ -212,7 +210,7 @@ namespace GotoExt
                     break;
             }
 
-            return _pubBiz.ToCode(win, pattern);
+            return ExtUtil.ToCode(win, pattern);
         }
 
         #endregion

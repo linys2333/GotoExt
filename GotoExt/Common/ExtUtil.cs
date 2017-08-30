@@ -2,30 +2,24 @@
 using EnvDTE;
 using EnvDTE80;
 using System.Text.RegularExpressions;
-using System.Linq;
+using GotoExt.Model;
 
-namespace GotoExt
+namespace GotoExt.Common
 {
     /// <summary>
-    /// ServiceAPI相关操作
+    /// 插件公共类
     /// </summary>
-    public class PubBiz
+    public static class ExtUtil
     {
-        private DTE2 _dte;
-
-        public PubBiz(DTE2 dte)
-        {
-            _dte = dte;
-        }
-
         /// <summary>
         /// 获取触发行的代码
         /// </summary>
+        /// <param name="dte"></param>
         /// <returns></returns>
-        public string GetSelection()
+        public static string GetSelection(DTE2 dte)
         {
             // 触发内容
-            var selection = (TextSelection)_dte.ActiveDocument.Selection;
+            var selection = (TextSelection)dte.ActiveDocument.Selection;
             string code = selection.Text;
 
             // 没有选中内容则获取当前行代码
@@ -47,11 +41,12 @@ namespace GotoExt
         /// <summary>
         /// 解析触发点的代码模型
         /// </summary>
+        /// <param name="dte"></param>
         /// <param name="serviceFunc"></param>
-        public void AnalyzeInfo(FuncInfo serviceFunc)
+        public static void AnalyzeInfo(DTE2 dte, FuncInfo serviceFunc)
         {
-            var codeModel = (FileCodeModel2)_dte.ActiveDocument.ProjectItem.FileCodeModel;
-            var selection = (TextSelection)_dte.ActiveDocument.Selection;
+            var codeModel = (FileCodeModel2)dte.ActiveDocument.ProjectItem.FileCodeModel;
+            var selection = (TextSelection)dte.ActiveDocument.Selection;
 
             // 触发的方法信息
             var codeFunc = (CodeFunction2) codeModel.CodeElementFromPoint(selection.AnchorPoint, vsCMElement.vsCMElementFunction);
@@ -67,8 +62,10 @@ namespace GotoExt
         /// <summary>
         /// 单纯匹配代码
         /// </summary>
+        /// <param name="win"></param>
+        /// <param name="pattern"></param>
         /// <returns></returns>
-        public bool ToCode(Window win, string pattern)
+        public static bool ToCode(Window win, string pattern)
         {
             var doc = (TextDocument)win.Document.Object("TextDocument");
 
@@ -91,8 +88,10 @@ namespace GotoExt
         /// <summary>
         /// 匹配代码模型
         /// </summary>
+        /// <param name="win"></param>
+        /// <param name="funcInfo"></param>
         /// <returns></returns>
-        public bool ToCode(Window win, FuncInfo funcInfo)
+        public static bool ToCode(Window win, FuncInfo funcInfo)
         {
             // 查找命名空间
             Func<CodeElements, CodeNamespace> findNamespace = source =>
@@ -211,8 +210,10 @@ namespace GotoExt
         /// <summary>
         /// 查找代码
         /// </summary>
+        /// <param name="win"></param>
+        /// <param name="pattern"></param>
         /// <returns></returns>
-        public string FindCode(Window win, string pattern)
+        public static string FindCode(Window win, string pattern)
         {
             var doc = (TextDocument)win.Document.Object("TextDocument");
 

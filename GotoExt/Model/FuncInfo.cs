@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace GotoExt
+namespace GotoExt.Model
 {
     /// <summary>
     /// Func相关信息

@@ -54,9 +54,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Biz\Model\FuncInfo.cs" />
-    <Compile Include="Biz\Model\ServiceFunc.cs" />
-    <Compile Include="Biz\PubBiz.cs" />
+    <Compile Include="Biz\BaseBiz.cs" />
+    <Compile Include="Group\BaseGroup.cs" />
+    <Compile Include="Model\FuncInfo.cs" />
+    <Compile Include="Model\ServiceFunc.cs" />
+    <Compile Include="Group\BaseCommand.cs" />
+    <Compile Include="Common\ExtUtil.cs" />
     <Compile Include="Biz\ToSQLBiz.cs" />
     <Compile Include="Biz\ToAPIBiz.cs" />
     <Compile Include="Group\CodeWinGroup\CodeWinGroup.cs" />
@@ -65,7 +68,7 @@
     <Compile Include="Group\CodeWinGroup\Command\ToSQL.cs" />
     <Compile Include="Group\ScriptCtxGroup\Command\ToAPI.cs" />
     <Compile Include="GotoExtPackage.cs" />
-    <Compile Include="Utility\Util.cs" />
+    <Compile Include="Common\Util.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Key.snk" />

@@ -1,18 +1,15 @@
-﻿using System;
-using Microsoft.VisualStudio.Shell;
+﻿using Microsoft.VisualStudio.Shell;
 
-namespace GotoExt
+namespace GotoExt.Command
 {
-    internal sealed class ScriptCtxGroup
+    internal sealed class ScriptCtxGroup : BaseGroup
     {
-        private ScriptCtxGroup(Package package)
+        private ScriptCtxGroup(Package package) : base(package)
         {
-            if (package == null)
-            {
-                throw new ArgumentNullException(nameof(package));
-            }
+        }
 
-            // 初始化子项
+        protected override void InitCommand(Package package)
+        {
             ToAPI.Initialize(package);
         }
 

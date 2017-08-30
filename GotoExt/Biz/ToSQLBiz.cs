@@ -6,29 +6,27 @@ using System.Windows.Forms;
 using System.Xml;
 using EnvDTE;
 using EnvDTE80;
+using GotoExt.Common;
+using GotoExt.Model;
 
-namespace GotoExt
+namespace GotoExt.Biz
 {
     /// <summary>
     /// ServiceAPI相关操作
     /// </summary>
-    public class ToSQLBiz
+    public class ToSQLBiz : BaseBiz
     {
         private FuncInfo _funcInfo;
-        private readonly DTE2 _dte;
-        private readonly PubBiz _pubBiz;
 
-        public ToSQLBiz(DTE2 dte)
+        public ToSQLBiz(DTE2 dte) : base(dte)
         {
-            _dte = dte;
-            _pubBiz = new PubBiz(_dte);
             _funcInfo = new FuncInfo();
         }
 
         /// <summary>
         /// 转到定义
         /// </summary>
-        public void Go()
+        public override void Run()
         {
             // 解析
             string sql = GetSelection();
@@ -46,7 +44,7 @@ namespace GotoExt
                 return;
             }
 
-            Window win = _dte.ItemOperations.OpenFile(path);
+            Window win = Dte.ItemOperations.OpenFile(path);
             if (!ToSQL(win, sql))
             {
                 MessageBox.Show("未找到匹配的SQL！");
@@ -63,7 +61,7 @@ namespace GotoExt
         private string GetSelection()
         {
             // 触发内容
-            var selection = (TextSelection)_dte.ActiveDocument.Selection;
+            var selection = (TextSelection)Dte.ActiveDocument.Selection;
             string code = selection.Text;
 
             // 没有选中内容则获取当前行代码
@@ -117,7 +115,7 @@ namespace GotoExt
         /// </summary>
         private void AnalyzeInfo()
         {
-            _pubBiz.AnalyzeInfo(_funcInfo);
+            ExtUtil.AnalyzeInfo(Dte, _funcInfo);
         }
         
         /// <summary>
@@ -126,7 +124,7 @@ namespace GotoExt
         /// <returns></returns>
         private string GetFullPath(string sql)
         {
-            string slnPath = _dte.Solution?.FullName;
+            string slnPath = Dte.Solution?.FullName;
             if (string.IsNullOrEmpty(slnPath))
             {
                 return "";
@@ -181,10 +179,16 @@ namespace GotoExt
                 : new List<string>();
         }
 
+        /// <summary>
+        /// 定位SQL
+        /// </summary>
+        /// <param name="win"></param>
+        /// <param name="sql"></param>
+        /// <returns></returns>
         private bool ToSQL(Window win, string sql)
         {
             string pattern = $@"\b{sql}\b";
-            return _pubBiz.ToCode(win, pattern);
+            return ExtUtil.ToCode(win, pattern);
         }
 
         #endregion

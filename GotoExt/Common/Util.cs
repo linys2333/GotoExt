@@ -1,8 +1,11 @@
 ﻿using System.IO;
 using System.Xml;
 
-namespace GotoExt
+namespace GotoExt.Common
 {
+    /// <summary>
+    /// 通用类
+    /// </summary>
     public static class Util
     {        
         /// <summary>
