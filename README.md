@@ -1,6 +1,6 @@
 ## 一些说明
 
-> VS2015的插件，针对明源重构平台ERP代码的扩展
+> 跳转插件（GotoExt），基于VS2015开发，针对明源重构平台ERP代码的扩展。【[实现说明](http://note.youdao.com/noteshare?id=532cf20d57189dbaebff6a8afee69188)】
 
 > 安装包地址：<https://raw.githubusercontent.com/linys2333/GoToExt/master/%E5%AE%89%E8%A3%85/GoToExt.vsix>
 
