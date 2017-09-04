@@ -12,7 +12,7 @@ namespace GotoExt.Common
     public static class ExtUtil
     {
         /// <summary>
-        /// 获取触发行的代码
+        /// 获取选中的代码
         /// </summary>
         /// <param name="dte"></param>
         /// <returns></returns>
@@ -21,21 +21,86 @@ namespace GotoExt.Common
             // 触发内容
             var selection = (TextSelection)dte.ActiveDocument.Selection;
             string code = selection.Text;
+            
+            // 多行转成一行
+            code = Regex.Replace(code, @"\s+", s => " ");
 
-            // 没有选中内容则获取当前行代码
-            if (string.IsNullOrEmpty(code))
-            {
-                // 触发起始点
-                EditPoint editPoint = selection.AnchorPoint.CreateEditPoint();
+            return code.Trim();
+        }
 
-                // 选中触发行
-                code = editPoint.GetLines(editPoint.Line, editPoint.Line + 1);
-            }
+        /// <summary>
+        /// 获取触发行的代码
+        /// </summary>
+        /// <param name="dte"></param>
+        /// <returns></returns>
+        public static string GetSelectRowCode(DTE2 dte)
+        {
+            // 触发内容
+            var selection = (TextSelection)dte.ActiveDocument.Selection;
+
+            // 触发起始点
+            EditPoint editPoint = selection.AnchorPoint.CreateEditPoint();
+
+            // 选中触发行
+            string code = editPoint.GetLines(editPoint.Line, editPoint.Line + 1);
 
             // 多行转成一行
             code = Regex.Replace(code, @"\s+", s => " ");
 
             return code.Trim();
+        }
+
+        /// <summary>
+        /// 获取触发点的字符串
+        /// </summary>
+        /// <param name="dte"></param>
+        /// <returns></returns>
+        public static string GetSelectString(DTE2 dte)
+        {
+            // 触发内容
+            var selection = (TextSelection)dte.ActiveDocument.Selection;
+
+            // 触发起始点
+            var point = selection.AnchorPoint;
+            EditPoint editPoint = point.CreateEditPoint();
+            EditPoint startPoint = point.CreateEditPoint();
+            EditPoint endPoint = point.CreateEditPoint();
+
+            // 寻找字符串起始点
+            for (int i = 0; i < 100; i++)
+            {
+                startPoint.MoveToLineAndOffset(editPoint.Line, startPoint.LineCharOffset - 1);
+
+                string str = editPoint.GetText(startPoint);
+
+                if (startPoint.LineCharOffset <= 1 || str.StartsWith(@""""))
+                {
+                    break;
+                }
+            }
+
+            // 寻找字符串终止点
+            for (int i = 0; i < 100; i++)
+            {
+                endPoint.MoveToLineAndOffset(editPoint.Line, endPoint.LineCharOffset + 1);
+
+                string str = editPoint.GetText(endPoint);
+
+                if (endPoint.LineCharOffset > editPoint.LineLength || str.EndsWith(@""""))
+                {
+                    break;
+                }
+            }
+
+            // 触发点字符串
+            string code = startPoint.GetText(endPoint);
+            if (!code.StartsWith(@"""") || !code.EndsWith(@""""))
+            {
+                code = "";
+            }
+
+            // 多行转成一行并去掉多余符号
+            return Regex.Replace(code, @"[""|\s]+", s => " ").Trim();
         }
 
         /// <summary>

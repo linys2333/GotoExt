@@ -27,7 +27,7 @@ namespace GotoExt.Biz
         public override void Run()
         {
             // 解析
-            string selection = ExtUtil.GetSelection(Dte);
+            string selection = ExtUtil.GetSelectRowCode(Dte);
             if (string.IsNullOrWhiteSpace(selection))
             {
                 return;

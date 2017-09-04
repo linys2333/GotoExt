@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -55,59 +56,21 @@ namespace GotoExt.Biz
         #region 私有方法
 
         /// <summary>
-        /// 获取触发行的代码
+        /// 获取触发点字符串
         /// </summary>
         /// <returns></returns>
         private string GetSelection()
         {
             // 触发内容
-            var selection = (TextSelection)Dte.ActiveDocument.Selection;
-            string code = selection.Text;
+            string code = ExtUtil.GetSelection(Dte);
 
             // 没有选中内容则获取当前行代码
             if (string.IsNullOrEmpty(code))
             {
-                // 触发起始点
-                var point = selection.AnchorPoint;
-                EditPoint editPoint = point.CreateEditPoint();
-                EditPoint startPoint = point.CreateEditPoint();
-                EditPoint endPoint = point.CreateEditPoint();
-
-                // 寻找字符串起始点
-                for (int i = 0; i < 100; i++)
-                {
-                    startPoint.MoveToLineAndOffset(editPoint.Line, startPoint.LineCharOffset - 1);
-
-                    string str = editPoint.GetText(startPoint);
-
-                    if (startPoint.LineCharOffset <= 1 || str.StartsWith(@""""))
-                    {
-                        break;
-                    }
-                }
-
-                // 寻找字符串终止点
-                for (int i = 0; i < 100; i++)
-                {
-                    endPoint.MoveToLineAndOffset(editPoint.Line, endPoint.LineCharOffset + 1);
-
-                    string str = editPoint.GetText(endPoint);
-
-                    if (endPoint.LineCharOffset > editPoint.LineLength || str.EndsWith(@""""))
-                    {
-                        break;
-                    }
-                }
-
-                code = startPoint.GetText(endPoint);
-                if (!code.StartsWith(@"""") || !code.EndsWith(@""""))
-                {
-                    code = "";
-                }
+                code = ExtUtil.GetSelectString(Dte);
             }
-
-            // 多行转成一行并去掉多余符号
-            return Regex.Replace(code, @"[""|\s]+", s => " ").Trim();
+            
+            return code;
         }
 
         /// <summary>
@@ -130,53 +93,66 @@ namespace GotoExt.Biz
                 return "";
             }
 
+            // 解决方案根路径
             string rootPath = slnPath.Substring(0, slnPath.LastIndexOf('\\'));
 
-            var dirs = Directory.EnumerateDirectories(rootPath, "*", SearchOption.TopDirectoryOnly).ToList();
+            // 找到“资源文件”文件夹
+            List<string> resDirs = GetResDir(rootPath);
 
-            List<string> files = new List<string>();
-            foreach (string dir in dirs)
-            {
-                if (dir.Contains("资源文件"))
-                {
-                    string path = $@"{dir}\Mysoft.{_funcInfo.AppCode}.Resource\XmlCommand";
-                    files.AddRange(GetConfig(path));
+            // config配置文件
+            List<string> files = GetConfig(resDirs);
 
-                    path = $@"{dir}\{_funcInfo.ProjName}.Resource\XmlCommand";
-                    files.AddRange(GetConfig(path));
-
-                    break;
-                }
-            }
-
-            var docs = new Dictionary<string, XmlDocument>();
+            // 匹配sql关键字
             foreach (string file in files)
             {
-                docs.Add(file, Util.ReadXml(file));
-            }
+                var doc = Util.ReadXml(file);
 
-            foreach (var doc in docs)
-            {
-                XmlNode node = doc.Value.SelectSingleNode($"//XmlCommand[@Name='{sql}']");
+                XmlNode node = doc.SelectSingleNode($"//XmlCommand[@Name='{sql}']");
                 if (node != null)
                 {
-                    return doc.Key;
+                    return file;
                 }
             }
-
             return "";
         }
 
         /// <summary>
-        /// 获取所有资源文件
+        /// 获取所有资源文件夹
         /// </summary>
-        /// <param name="path"></param>
+        /// <param name="rootPath"></param>
         /// <returns></returns>
-        private List<string> GetConfig(string path)
+        private List<string> GetResDir(string rootPath)
         {
-            return Directory.Exists(path)
-                ? Directory.EnumerateFiles(path, "*.config", SearchOption.AllDirectories).ToList()
-                : new List<string>();
+            List<string> dirs = Util.GetDirPathList(rootPath, "*", false);
+
+            // 找到“资源文件”文件夹
+            foreach (string dir in dirs)
+            {
+                if (dir.Contains("资源文件"))
+                {
+                    return Util.GetDirPathList(dir, "Mysoft.*.Resource", false);
+                }
+            }
+
+            return new List<string>();
+        }
+
+        /// <summary>
+        /// 获取所有资源配置文件
+        /// </summary>
+        /// <param name="resDirs"></param>
+        /// <returns></returns>
+        private List<string> GetConfig(List<string> resDirs)
+        {
+            List<string> files = new List<string>();
+
+            foreach (string resDir in resDirs)
+            {
+                string path = $@"{resDir}\XmlCommand";
+                files.AddRange(Util.GetFilePathList(path, "*.config", true));
+            }
+
+            return files;
         }
 
         /// <summary>

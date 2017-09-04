@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Xml;
 
 namespace GotoExt.Common
@@ -41,6 +43,48 @@ namespace GotoExt.Common
                 return "";
             }
             return fileName.Substring(index + 1);
+        }
+
+        /// <summary>
+        /// 获取文件路径列表
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="searchPattern"></param>
+        /// <param name="isAllDir">是否搜索所有文件夹</param>
+        /// <returns></returns>
+        public static List<string> GetFilePathList(string path, string searchPattern, bool isAllDir)
+        {
+            if (string.IsNullOrEmpty(searchPattern))
+            {
+                searchPattern = "*.*";
+            }
+
+            return Directory.Exists(path)
+                ? Directory.EnumerateFiles(path, searchPattern, isAllDir
+                    ? SearchOption.AllDirectories
+                    : SearchOption.TopDirectoryOnly).ToList()
+                : new List<string>();
+        }
+
+        /// <summary>
+        /// 获取文件夹路径列表
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="searchPattern"></param>
+        /// <param name="isAllDir">是否搜索所有文件夹</param>
+        /// <returns></returns>
+        public static List<string> GetDirPathList(string path, string searchPattern, bool isAllDir)
+        {
+            if (string.IsNullOrEmpty(searchPattern))
+            {
+                searchPattern = "*";
+            }
+
+            return Directory.Exists(path)
+                ? Directory.EnumerateDirectories(path, searchPattern, isAllDir
+                    ? SearchOption.AllDirectories
+                    : SearchOption.TopDirectoryOnly).ToList()
+                : new List<string>();
         }
     }
 }
