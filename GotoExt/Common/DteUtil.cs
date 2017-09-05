@@ -9,7 +9,7 @@ namespace GotoExt.Common
     /// <summary>
     /// 插件公共类
     /// </summary>
-    public static class ExtUtil
+    public static class DteUtil
     {
         /// <summary>
         /// 获取选中的代码
@@ -104,11 +104,11 @@ namespace GotoExt.Common
         }
 
         /// <summary>
-        /// 解析触发点的代码模型
+        /// 解析触发点的方法模型
         /// </summary>
         /// <param name="dte"></param>
         /// <param name="serviceFunc"></param>
-        public static void AnalyzeInfo(DTE2 dte, FuncInfo serviceFunc)
+        public static void AnalyzeFunc(DTE2 dte, ref FuncInfo serviceFunc)
         {
             var codeModel = (FileCodeModel2)dte.ActiveDocument.ProjectItem.FileCodeModel;
             var selection = (TextSelection)dte.ActiveDocument.Selection;

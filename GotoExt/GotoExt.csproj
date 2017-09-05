@@ -60,7 +60,7 @@
     <Compile Include="Model\FuncInfo.cs" />
     <Compile Include="Model\ServiceFunc.cs" />
     <Compile Include="Group\BaseCommand.cs" />
-    <Compile Include="Common\ExtUtil.cs" />
+    <Compile Include="Common\DteUtil.cs" />
     <Compile Include="Biz\ToSQLBiz.cs" />
     <Compile Include="Biz\ToAPIBiz.cs" />
     <Compile Include="Group\CodeWinGroup\CodeWinGroup.cs" />

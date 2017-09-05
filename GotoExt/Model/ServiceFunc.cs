@@ -8,9 +8,9 @@ namespace GotoExt.Model
     public class ServiceFunc : FuncInfo
     {
         /// <summary>
-        /// 命名空间：Mysoft.Gtxt.GtFaMng
+        /// 项目名称：Mysoft.Gtxt.GtFaMng
         /// </summary>
-        public string ProjName => Regex.Replace(Namespace, @"\.AppServices\b.*", "");
+        public new string ProjName => Regex.Replace(Namespace, @"\.AppServices\b.*", "");
         
         /// <summary>
         /// 文件相对路径：Mysoft.Gtxt.GtFaMng\AppServices\GtFaAppService

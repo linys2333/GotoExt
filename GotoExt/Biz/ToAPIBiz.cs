@@ -10,7 +10,7 @@ using GotoExt.Model;
 namespace GotoExt.Biz
 {
     /// <summary>
-    /// ServiceAPI相关操作
+    /// ToAPI相关业务
     /// </summary>
     public class ToAPIBiz : BaseBiz
     {
@@ -24,10 +24,10 @@ namespace GotoExt.Biz
         /// <summary>
         /// 转到定义
         /// </summary>
-        public override void Run()
+        public override void Goto()
         {
             // 解析
-            string selection = ExtUtil.GetSelectRowCode(Dte);
+            string selection = DteUtil.GetSelectRowCode(Dte);
             if (string.IsNullOrWhiteSpace(selection))
             {
                 return;
@@ -50,7 +50,7 @@ namespace GotoExt.Biz
             }
 
             Window win = Dte.ItemOperations.OpenFile(path);
-            if (!ExtUtil.ToCode(win, _funcInfo))
+            if (!DteUtil.ToCode(win, _funcInfo))
             {
                 if (_funcInfo.ParamNum > -1)
                 {
@@ -119,7 +119,7 @@ namespace GotoExt.Biz
         private string GetJs(string service)
         {
             // appService = require("Mysoft.Gtxt.GtFaMng.AppServices.GtFaAppService")
-            string text = ExtUtil.FindCode(Dte.ActiveWindow, $@"\b{service}\s+=\s+require\([""|'].+?[""|']\)");
+            string text = DteUtil.FindCode(Dte.ActiveWindow, $@"\b{service}\s+=\s+require\([""|'].+?[""|']\)");
             
             string pattern = $@"(?<=\brequire\([""|']).+?(?=[""|']\))";
             string value = Regex.Match(text, pattern, RegexOptions.IgnoreCase).Value;
@@ -210,7 +210,7 @@ namespace GotoExt.Biz
                     break;
             }
 
-            return ExtUtil.ToCode(win, pattern);
+            return DteUtil.ToCode(win, pattern);
         }
 
         #endregion

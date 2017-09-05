@@ -1,8 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Xml;
 using EnvDTE;
@@ -13,7 +9,7 @@ using GotoExt.Model;
 namespace GotoExt.Biz
 {
     /// <summary>
-    /// ServiceAPI相关操作
+    /// ToSQL相关业务
     /// </summary>
     public class ToSQLBiz : BaseBiz
     {
@@ -27,7 +23,7 @@ namespace GotoExt.Biz
         /// <summary>
         /// 转到定义
         /// </summary>
-        public override void Run()
+        public override void Goto()
         {
             // 解析
             string sql = GetSelection();
@@ -62,12 +58,12 @@ namespace GotoExt.Biz
         private string GetSelection()
         {
             // 触发内容
-            string code = ExtUtil.GetSelection(Dte);
+            string code = DteUtil.GetSelection(Dte);
 
             // 没有选中内容则获取当前行代码
             if (string.IsNullOrEmpty(code))
             {
-                code = ExtUtil.GetSelectString(Dte);
+                code = DteUtil.GetSelectString(Dte);
             }
             
             return code;
@@ -78,7 +74,7 @@ namespace GotoExt.Biz
         /// </summary>
         private void AnalyzeInfo()
         {
-            ExtUtil.AnalyzeInfo(Dte, _funcInfo);
+            DteUtil.AnalyzeFunc(Dte, ref _funcInfo);
         }
         
         /// <summary>
@@ -164,7 +160,7 @@ namespace GotoExt.Biz
         private bool ToSQL(Window win, string sql)
         {
             string pattern = $@"\b{sql}\b";
-            return ExtUtil.ToCode(win, pattern);
+            return DteUtil.ToCode(win, pattern);
         }
 
         #endregion

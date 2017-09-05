@@ -4,9 +4,12 @@ namespace GotoExt.Biz
 {
     public interface IBaseBiz
     {
-        void Run();
+        void Goto();
     }
 
+    /// <summary>
+    /// Goto业务基类
+    /// </summary>
     public abstract class BaseBiz : IBaseBiz
     {
         protected readonly DTE2 Dte;
@@ -16,6 +19,6 @@ namespace GotoExt.Biz
             Dte = dte;
         }
 
-        public abstract void Run();
+        public abstract void Goto();
     }
 }

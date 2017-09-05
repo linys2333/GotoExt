@@ -3,6 +3,9 @@ using Microsoft.VisualStudio.Shell;
 
 namespace GotoExt.Command
 {
+    /// <summary>
+    /// 命令组基类
+    /// </summary>
     internal abstract class BaseGroup
     {
         protected BaseGroup(Package package)

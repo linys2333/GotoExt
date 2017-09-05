@@ -7,6 +7,10 @@ using Microsoft.VisualStudio.Shell;
 
 namespace GotoExt.Command
 {
+    /// <summary>
+    /// 命令基类
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     internal abstract class BaseCommand<T> where T : BaseBiz
     {
         #region 抽象属性
@@ -112,7 +116,7 @@ namespace GotoExt.Command
         /// </summary>
         protected virtual void Call()
         {
-            Biz.Run();
+            Biz.Goto();
         }
 
         #endregion
