@@ -5,6 +5,7 @@ using EnvDTE;
 using EnvDTE80;
 using GotoExt.Common;
 using GotoExt.Model;
+using System.IO;
 
 namespace GotoExt.Biz
 {
@@ -32,7 +33,7 @@ namespace GotoExt.Biz
                 return;
             }
             AnalyzeInfo();
-            
+
             // 查找
             string path = GetFullPath(sql);
             if (string.IsNullOrEmpty(path))
@@ -65,7 +66,7 @@ namespace GotoExt.Biz
             {
                 code = DteUtil.GetSelectString(Dte);
             }
-            
+
             return code;
         }
 
@@ -76,7 +77,7 @@ namespace GotoExt.Biz
         {
             DteUtil.AnalyzeFunc(Dte, ref _funcInfo);
         }
-        
+
         /// <summary>
         /// 获取资源文件完整路径
         /// </summary>
@@ -121,16 +122,32 @@ namespace GotoExt.Biz
         {
             List<string> dirs = Util.GetDirPathList(rootPath, "*", false);
 
+            var list = new List<string>();
+
             // 找到“资源文件”文件夹
             foreach (string dir in dirs)
             {
-                if (dir.Contains("资源文件"))
+                //判断是否是二开模式 看存在二开文件夹
+                var customize = Path.Combine(dir, "Customize");
+                if (Directory.Exists(customize))
                 {
-                    return Util.GetDirPathList(dir, "Mysoft.*.Resource", false);
+                    var xmlCommand = Path.Combine(customize, "x_XmlCommand");
+                    if (Directory.Exists(xmlCommand))
+                    {
+                        //坑爹的二开sql文件夹，怎么根目录有config，还有子文件夹有sql
+                        var find = Util.GetDirPathList(xmlCommand, "*", false);
+                        find.Add(xmlCommand);
+                        list.AddRange(find);
+                    }
+                }
+                else if (dir.Contains("资源文件"))
+                {
+                    var find = Util.GetDirPathList(dir, "Mysoft.*.Resource", false);
+                    list.AddRange(find);
                 }
             }
 
-            return new List<string>();
+            return list;
         }
 
         /// <summary>
@@ -144,8 +161,15 @@ namespace GotoExt.Biz
 
             foreach (string resDir in resDirs)
             {
-                string path = $@"{resDir}\XmlCommand";
-                files.AddRange(Util.GetFilePathList(path, "*.config", true));
+                if (resDir.Contains("Resource"))
+                {
+                    string path = $@"{resDir}\XmlCommand";
+                    files.AddRange(Util.GetFilePathList(path, "*.config", true));
+                }
+                else
+                {
+                    files.AddRange(Util.GetFilePathList(resDir, "*.config", true));
+                }
             }
 
             return files;
