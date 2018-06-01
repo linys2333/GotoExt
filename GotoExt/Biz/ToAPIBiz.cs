@@ -6,6 +6,7 @@ using EnvDTE;
 using EnvDTE80;
 using GotoExt.Common;
 using GotoExt.Model;
+using System.Linq;
 
 namespace GotoExt.Biz
 {
@@ -100,7 +101,7 @@ namespace GotoExt.Biz
             string param = Regex.Match(code,
                 $@"(?<={_funcInfo.Func}\s*?\()(?>[^\(\)]+|\((?<sign>)|\)(?<-sign>))*(?(sign)(?!))(?=\))").Value;
 
-            if(string.IsNullOrEmpty(param))
+            if (string.IsNullOrEmpty(param))
             {
                 _funcInfo.ParamNum = 0;
             }
@@ -120,10 +121,10 @@ namespace GotoExt.Biz
         {
             // appService = require("Mysoft.Gtxt.GtFaMng.AppServices.GtFaAppService")
             string text = DteUtil.FindCode(Dte.ActiveWindow, $@"\b{service}\s+=\s+require\([""|'].+?[""|']\)");
-            
+
             string pattern = $@"(?<=\brequire\([""|']).+?(?=[""|']\))";
             string value = Regex.Match(text, pattern, RegexOptions.IgnoreCase).Value;
-            
+
             return value.Trim();
         }
 
@@ -166,7 +167,10 @@ namespace GotoExt.Biz
                 }
             }
 
-            return "";
+            //如果没有找到，直接尝试全文搜索
+            var file = Util.GetFilePathList(Path.GetDirectoryName(slnPath), _funcInfo.Class + ".cs", true);
+
+            return file.FirstOrDefault() ?? "";
         }
 
         /// <summary>

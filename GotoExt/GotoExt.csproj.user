@@ -2,23 +2,15 @@
 <Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <StartAction>Program</StartAction>
-    <StartProgram>E:\Visual Studio 2015\Common7\IDE\devenv.exe</StartProgram>
+    <StartProgram>D:\Program Files %28x86%29\Microsoft Visual Studio\2017\Professional\Common7\IDE\devenv.exe</StartProgram>
     <StartArguments>/rootsuffix Exp</StartArguments>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <StartAction>Program</StartAction>
-    <StartProgram>E:\Visual Studio 2015\Common7\IDE\devenv.exe</StartProgram>
+    <StartProgram>D:\Program Files %28x86%29\Microsoft Visual Studio\2017\Professional\Common7\IDE\devenv.exe</StartProgram>
     <StartArguments>/rootsuffix Exp</StartArguments>
   </PropertyGroup>
   <PropertyGroup>
     <ProjectView>ProjectFiles</ProjectView>
-    <PublishUrlHistory />
-    <InstallUrlHistory />
-    <SupportUrlHistory />
-    <UpdateUrlHistory />
-    <BootstrapperUrlHistory />
-    <ErrorReportUrlHistory />
-    <FallbackCulture>zh-CN</FallbackCulture>
-    <VerifyUploadedFiles>false</VerifyUploadedFiles>
   </PropertyGroup>
 </Project>

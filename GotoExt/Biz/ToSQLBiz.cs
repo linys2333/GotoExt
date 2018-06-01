@@ -6,6 +6,7 @@ using EnvDTE80;
 using GotoExt.Common;
 using GotoExt.Model;
 using System.IO;
+using System.Linq;
 
 namespace GotoExt.Biz
 {
@@ -93,11 +94,8 @@ namespace GotoExt.Biz
             // 解决方案根路径
             string rootPath = slnPath.Substring(0, slnPath.LastIndexOf('\\'));
 
-            // 找到“资源文件”文件夹
-            List<string> resDirs = GetResDir(rootPath);
-
-            // config配置文件
-            List<string> files = GetConfig(resDirs);
+            // 找到所有command文件
+            var files = GetResPath(rootPath);
 
             // 匹配sql关键字
             foreach (string file in files)
@@ -113,66 +111,16 @@ namespace GotoExt.Biz
             return "";
         }
 
-        /// <summary>
-        /// 获取所有资源文件夹
-        /// </summary>
-        /// <param name="rootPath"></param>
-        /// <returns></returns>
-        private List<string> GetResDir(string rootPath)
+
+        static List<string> GetResPath(string rootPath)
         {
-            List<string> dirs = Util.GetDirPathList(rootPath, "*", false);
+            //var resDir = Util.GetDirPathList(rootPath, "*资源文件*", true);
 
-            var list = new List<string>();
+            //var files = resDir.SelectMany(t => Util.GetFilePathList(t, "*.XmlCommand.Config", true));
 
-            // 找到“资源文件”文件夹
-            foreach (string dir in dirs)
-            {
-                //判断是否是二开模式 看存在二开文件夹
-                var customize = Path.Combine(dir, "Customize");
-                if (Directory.Exists(customize))
-                {
-                    var xmlCommand = Path.Combine(customize, "x_XmlCommand");
-                    if (Directory.Exists(xmlCommand))
-                    {
-                        //坑爹的二开sql文件夹，怎么根目录有config，还有子文件夹有sql
-                        var find = Util.GetDirPathList(xmlCommand, "*", false);
-                        find.Add(xmlCommand);
-                        list.AddRange(find);
-                    }
-                }
-                else if (dir.Contains("资源文件"))
-                {
-                    var find = Util.GetDirPathList(dir, "Mysoft.*.Resource", false);
-                    list.AddRange(find);
-                }
-            }
+            //return files;
 
-            return list;
-        }
-
-        /// <summary>
-        /// 获取所有资源配置文件
-        /// </summary>
-        /// <param name="resDirs"></param>
-        /// <returns></returns>
-        private List<string> GetConfig(List<string> resDirs)
-        {
-            List<string> files = new List<string>();
-
-            foreach (string resDir in resDirs)
-            {
-                if (resDir.Contains("Resource"))
-                {
-                    string path = $@"{resDir}\XmlCommand";
-                    files.AddRange(Util.GetFilePathList(path, "*.config", true));
-                }
-                else
-                {
-                    files.AddRange(Util.GetFilePathList(resDir, "*.config", true));
-                }
-            }
-
-            return files;
+            return Util.GetFilePathList(rootPath, "*.XmlCommand.Config", true);
         }
 
         /// <summary>
